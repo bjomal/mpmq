@@ -1,5 +1,23 @@
 {
-    "require": {
+    "name": "bjomal/mpmq",
+    "description": "My Precious Message Queue",
+    "license": "GPL-3",
+    "type": "project",
+    "keywords": ["my-precious-message-queue"],
+    "authors": [
+        {
+            "name": "Bjørne Malmanger",
+            "email": "bjorne@malmanger.no",
+            "homepage": "https://www.malmanger.no"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Trying\\": "app/src/Trying",
+            "Queues\\": "app/src/Queues"
+        }
+    },
+     "require": {
         "slim/slim": "^3.0"
     }
 }

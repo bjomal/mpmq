@@ -1,0 +1,247 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.5.0",
+        "title": "My Precious Message Queue",
+        "description": "A simple Message Queue implementation for PHP using RESTful API",
+        "contact": {
+            "name": "Bjørne Malmanger",
+            "email": "bjorne@malmanger.no",
+            "url": "http://www.malmanger.no"
+        },
+        "license": {
+            "name": "GPLv3",
+            "url": "http://www.gnu.org/licenses/gpl.txt"
+        }
+    },
+    "host": "www.malmanger.no",
+    "basePath": "/mpmq",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/queues": {
+            "get": {
+                "description": "list of available queues.\n",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "title": "ArrayOfQueues",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/queue"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Queues Found"
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new queue",
+                "parameters": [
+                    {
+                        "name": "queue",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/newQueue"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/queue"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/queues/{id}": {
+            "get": {
+                "description": "Get information about queue with id={id}\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Queue information",
+                        "schema": {
+                            "$ref": "#/definitions/queue"
+                        }
+                    },
+                    "404": {
+                        "description": "No Queues Found"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update queue\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue to update",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "queue",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/newQueue"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Queue updated",
+                        "schema": {
+                            "$ref": "#/definitions/queue"
+                        }
+                    },
+                    "404": {
+                        "description": "Queue not found"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete queue with id={id}\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Queue deleted OK"
+                    },
+                    "404": {
+                        "description": "No Queues Found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "queue": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Default timeout for messages in queue"
+                },
+                "messages": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "available": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "in-flight": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "newQueue": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Default timeout for messages in queue"
+                },
+                "messages": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "available": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "in-flight": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "errorModel": {
+            "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

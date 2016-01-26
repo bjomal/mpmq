@@ -157,6 +157,71 @@
                     }
                 }
             }
+        },
+        "/queues/{id}/messages": {
+            "get": {
+                "description": "list of available messages in queue with id={id}.\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "title": "ArrayOfMessages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/message"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Messages or Queue Found"
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new message",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "queue",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/newQueue"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/queue"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -180,19 +245,19 @@
                 "timeout": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Default timeout for messages in queue"
-                },
-                "messages": {
-                    "type": "integer",
-                    "format": "int32"
+                    "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
+                    "default": 86400,
+                    "min": 60
                 },
                 "available": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "description": "Number of available messages in queue"
                 },
                 "in-flight": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "description": "Number of messages In Flight"
                 }
             }
         },
@@ -211,19 +276,9 @@
                 "timeout": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Default timeout for messages in queue"
-                },
-                "messages": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "available": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "in-flight": {
-                    "type": "integer",
-                    "format": "int32"
+                    "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
+                    "default": 86400,
+                    "min": 60
                 }
             }
         },
@@ -240,6 +295,36 @@
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "message": {
+            "type": "object",
+            "required": [
+                "messageId",
+                "title"
+            ],
+            "properties": {
+                "messageId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string",
+                    "format": "byte"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
+                    "default": 86400,
+                    "min": 60
+                },
+                "in-flight": {
+                    "type": "boolean"
                 }
             }
         }

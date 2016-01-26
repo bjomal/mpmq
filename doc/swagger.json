@@ -114,7 +114,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/newQueue"
+                            "$ref": "#/definitions/queue"
                         }
                     }
                 ],
@@ -203,7 +203,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/newQueue"
+                            "$ref": "#/definitions/newMessage"
                         }
                     }
                 ],
@@ -211,7 +211,7 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/queue"
+                            "$ref": "#/definitions/message"
                         }
                     },
                     "default": {
@@ -219,6 +219,107 @@
                         "schema": {
                             "$ref": "#/definitions/errorModel"
                         }
+                    }
+                }
+            }
+        },
+        "/queues/{id}/messages/{messageId}": {
+            "get": {
+                "description": "Get information about message with id={messageId} in queue with id={id}\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Queue information",
+                        "schema": {
+                            "$ref": "#/definitions/message"
+                        }
+                    },
+                    "404": {
+                        "description": "No Queues Found"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update message in queue\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue to update",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/message"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Queue updated",
+                        "schema": {
+                            "$ref": "#/definitions/message"
+                        }
+                    },
+                    "404": {
+                        "description": "Queue not found"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete queue with id={id}\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Message deleted OK"
+                    },
+                    "404": {
+                        "description": "No Message Found"
                     }
                 }
             }
@@ -324,7 +425,30 @@
                     "min": 60
                 },
                 "in-flight": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "newMessage": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string",
+                    "format": "byte"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
+                    "default": 86400,
+                    "min": 60
                 }
             }
         }

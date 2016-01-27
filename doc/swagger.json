@@ -312,6 +312,14 @@
                         "required": true,
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -347,8 +355,7 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
-                    "default": 86400,
-                    "min": 60
+                    "default": 86400
                 },
                 "available": {
                     "type": "integer",
@@ -378,8 +385,7 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
-                    "default": 86400,
-                    "min": 60
+                    "default": 86400
                 }
             }
         },
@@ -421,8 +427,7 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
-                    "default": 86400,
-                    "min": 60
+                    "default": 86400
                 },
                 "in-flight": {
                     "type": "boolean",
@@ -447,8 +452,7 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Default timeout in seconds for messages in flight, default 24h (86400s) minimum 60s",
-                    "default": 86400,
-                    "min": 60
+                    "default": 86400
                 }
             }
         }

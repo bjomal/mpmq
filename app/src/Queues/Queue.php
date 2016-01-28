@@ -14,15 +14,21 @@ class Queue {
     // public function listMessages() {
     //     return var_dump($this, true);
     // }   
-    public function listAvailableMessages($request, $response, $args) {
-        return "Available messages list<br>\ncomes here...<br>\n" . var_dump($args, true);
-    }   
     public function listInFlightMessages($request, $response, $args) {
         return "InFlight messages list<br>\ncomes here...<br>\n" . var_dump($args, true);
     }   
-
-    public function listFinishedMessages($request, $response, $args) {
-        return "Finished messages list<br>\ncomes here...<br>\n" . var_dump($args, true);
-    }   
-
+    public function getMessage($request, $response, $args) {
+        return "Message <br>\ncomes here...<br>\n" . var_dump($args, true);
+    }
+    public function getMessageInformation($request, $response, $args) {
+        return "Message <br>\ncomes here...<br>\n" . var_dump($args, true);
+    }
+    // Delete message from queue - To be done up on completion
+    public function deleteMessage($request, $response, $args) {
+        return "Message Complete(delete)<br>\ncomes here...<br>\n" . var_dump($args, true);
+    }
+    // Add message from queue - To be done up on completion
+    public function addMessage($request, $response, $args) {
+        return "Adding message to queue<br>\ncomes here...<br>\n" . var_dump($args, true);
+    }
 }

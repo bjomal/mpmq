@@ -14,10 +14,10 @@
             "url": "http://www.gnu.org/licenses/gpl.txt"
         }
     },
-    "host": "www.malmanger.no",
+    "host": "rp.malmanger.no",
     "basePath": "/mpmq",
     "schemes": [
-        "https"
+        "http"
     ],
     "consumes": [
         "application/json"

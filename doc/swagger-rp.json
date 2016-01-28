@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "version": "0.5.0",
+        "version": "0.5.1",
         "title": "My Precious Message Queue",
         "description": "A simple Message Queue implementation for PHP using RESTful API",
         "contact": {

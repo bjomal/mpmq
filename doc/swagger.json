@@ -199,7 +199,7 @@
                         "format": "int64"
                     },
                     {
-                        "name": "queue",
+                        "name": "message",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -280,7 +280,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/message"
+                            "$ref": "#/definitions/newMessage"
                         }
                     }
                 ],

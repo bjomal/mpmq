@@ -20,6 +20,9 @@ class Queue {
     public function getMessage($request, $response, $args) {
         return "Message <br>\ncomes here...<br>\n" . var_dump($args, true);
     }
+    public function newMessage($request, $response, $args) {
+        return "New Message <br>\ncomes here...<br>\n" . var_dump($args, true);
+    }
     public function getMessageInformation($request, $response, $args) {
         return "Message <br>\ncomes here...<br>\n" . var_dump($args, true);
     }

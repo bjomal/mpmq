@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "version": "0.5.0",
+        "version": "0.5.1",
         "title": "My Precious Message Queue",
         "description": "A simple Message Queue implementation for PHP using RESTful API",
         "contact": {
@@ -223,9 +223,47 @@
                 }
             }
         },
+        "/queues/{id}/messages/in-flight": {
+            "get": {
+                "description": "list of messages that is reserved and in in-flight for queue with id={id}.\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of queue",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "title": "ArrayOfMessages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/message"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Messages or Queue Found"
+                    }
+                }
+            }
+        },
         "/queues/{id}/messages/{messageId}": {
             "get": {
-                "description": "Get information about message with id={messageId} in queue with id={id}\n",
+                "description": "Get message with id={messageId} in queue with id={id} and reserve it to in-flight\n",
                 "parameters": [
                     {
                         "name": "id",
@@ -331,9 +369,126 @@
                     }
                 }
             }
+        },
+        "/queues/{id}/messages/{messageId}/information": {
+            "get": {
+                "description": "Get information about message with id={messageId} in queue with id={id}\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message information",
+                        "schema": {
+                            "$ref": "#/definitions/message"
+                        }
+                    },
+                    "404": {
+                        "description": "No Queues Found"
+                    }
+                }
+            }
+        },
+        "/queues/{id}/messages/{messageId}/touch": {
+            "get": {
+                "description": "touch and extend timeout for message with id={messageId} in queue with id={id}\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message updated",
+                        "schema": {
+                            "$ref": "#/definitions/message"
+                        }
+                    },
+                    "404": {
+                        "description": "No Message Found"
+                    }
+                }
+            }
+        },
+        "/queues/{id}/messages/{messageId}/release": {
+            "get": {
+                "description": "release message with id={messageId} in queue with id={id} from in-flight\n",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "description": "ID og queue to get",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message released",
+                        "schema": {
+                            "$ref": "#/definitions/message"
+                        }
+                    },
+                    "404": {
+                        "description": "No Message Found"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "link": {
+            "type": "object",
+            "required": [
+                "rel",
+                "href"
+            ],
+            "properties": {
+                "rel": {
+                    "type": "string"
+                },
+                "href": {
+                    "type": "string"
+                }
+            }
+        },
         "queue": {
             "type": "object",
             "required": [
@@ -366,6 +521,13 @@
                     "type": "integer",
                     "format": "int32",
                     "description": "Number of messages In Flight"
+                },
+                "links": {
+                    "title": "ArrayOfLinks",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/link"
+                    }
                 }
             }
         },
@@ -432,6 +594,13 @@
                 "in-flight": {
                     "type": "boolean",
                     "default": false
+                },
+                "links": {
+                    "title": "ArrayOfLinks",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/link"
+                    }
                 }
             }
         },

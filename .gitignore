@@ -1,3 +1,5 @@
 composer.phar
+test.php
 /vendor/
 /temp/
+/app/data/

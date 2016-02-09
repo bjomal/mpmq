@@ -6,11 +6,11 @@ return [
     'settings' => [
         'db' => [
             // Illuminate/database configuration
-            'driver'    => 'mysql',
+            'driver'    => 'sqlite3',
             'host'      => 'localhost',
-            'database'  => 'bookshelf',
-            'username'  => 'bookshelf',
-            'password'  => 'bookshelf',
+            'database'  => 'app/data/queues.db',
+            'username'  => 'mpmq',
+            'password'  => 'mpmq',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',

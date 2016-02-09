@@ -1,5 +1,9 @@
 <?php
-namespace Queues;
+namespace Malmanger\Mpmq\Queues;
+
+use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\StreamInterface as Stream;
 
 class Queue {
     // private $id;
@@ -8,41 +12,41 @@ class Queue {
     //     $this->id = $id;
     // }
 
-    public function listMessages($request, $response, $args) {
+    public function listMessages(Request $request, Response $response, array $args) {
     	return "All messages list<br>\ncomes here...<br>\n" . var_dump($args, true);
     }	
     // public function listMessages() {
     //     return var_dump($this, true);
     // }   
-    public function listInFlightMessages($request, $response, $args) {
+    public function listInFlightMessages(Request $request, Response $response, array $args) {
         return "InFlight messages list<br>\ncomes here...<br>\n" . var_dump($args, true);
     }   
-    public function getMessage($request, $response, $args) {
+    public function getMessage(Request $request, Response $response, array $args) {
         return "Message <br>\ncomes here...<br>\n" . var_dump($args, true);
     }
     // Get and release message from queue - To be done up on completion
-    public function releaseMessage($request, $response, $args) {
+    public function releaseMessage(Request $request, Response $response, array $args) {
         return "Release message back to queue<br>\ncomes here...<br>\n" . var_dump($args, true);
     }
-    public function newMessage($request, $response, $args) {
+    public function newMessage(Request $request, Response $response, array $args) {
         return "New Message <br>\ncomes here...<br>\n" . var_dump($args, true);
     }
-    public function updateMessage($request, $response, $args) {
+    public function updateMessage(Request $request, Response $response, array $args) {
         return "Update Message <br>\ncomes here...<br>\n" . var_dump($args, true);
     }
-    public function getMessageInformation($request, $response, $args) {
+    public function getMessageInformation(Request $request, Response $response, array $args) {
         return "Message <br>\ncomes here...<br>\n" . var_dump($args, true);
     }
     // Delete message from queue - To be done up on completion
-    public function deleteMessage($request, $response, $args) {
+    public function deleteMessage(Request $request, Response $response, array $args) {
         return "Message Complete(delete)<br>\ncomes here...<br>\n" . var_dump($args, true);
     }
     // Get and release message from queue - To be done up on completion
-    public function touchMessage($request, $response, $args) {
+    public function touchMessage(Request $request, Response $response, array $args) {
         return "Renew reserve time in-flight<br>\ncomes here...<br>\n" . var_dump($args, true);
     }
 //    // Add message from queue - To be done up on completion
-//    public function addMessage($request, $response, $args) {
+//    public function addMessage(Request $request, Response $response, array $args) {
 //        return "Adding message to queue<br>\ncomes here...<br>\n" . var_dump($args, true);
 //    }
 }

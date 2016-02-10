@@ -13,10 +13,7 @@ class DbQueue {
     public function __construct($id, $name, $description = '', $timeout = 86400) {
         $log = \Malmanger\Mpmq\Util\Log::getInstance();
         $this->id = $id;
-        try {
-            $this->load();      // load data from database - If not this is a new queue
-            $this->isSaved = true;
-        } catch (Exception $e) {
+        if (!$this->load()) {
             $this->name = $name;
             $this->description = $description;
             $this->timeout = $timeout;

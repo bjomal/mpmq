@@ -41,7 +41,7 @@ class SQLite extends Db {
     public function getQueue($id) {
         // id, name, description, timeout
         $ret = array();
-        $sql = "SELECT * FROM queues ORDER BY id ASC";
+        $sql = "SELECT * FROM queues WHERE id = '${id}' ORDER BY id ASC";
         $results = $this->db->query($sql);
         while ($row = $results->fetchArray()) {
             $key = "id";

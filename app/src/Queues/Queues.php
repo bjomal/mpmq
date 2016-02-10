@@ -35,24 +35,46 @@ class Queues {
         $data = $request->getParsedBody();
         $this->log->debug("newQueue data=".print_r($data, true));
 
-        // TODO: check with array_key_exists...
+        // Check for mandatory parameters and set defaults
+        $timeout = null;
+        $description = '';
+
         $key = "id";
         if (!array_key_exists($key, $data)) {  
-            $err->addError("Missing value for required input '" . $key . "'", $err->CODE_DATA_MISSING);
+            $err->addMissing($key);
         }
         $key = "name";
         if (!array_key_exists($key, $data)) {  
-            $err->addError("Missing value for required input '" . $key . "'", $err->CODE_DATA_MISSING);
+            $err->addMissing($key);
         }
-        $key = "xxx";
-        $err->addError("Missing value for required input '" . $key . "'", $err->CODE_DATA_MISSING);
-        $key = "yyy";
-        $err->addError("Missing value for required input '" . $key . "'", $err->CODE_DATA_MISSING);
+        $key = "description";
+        if (array_key_exists($key, $data)) {  
+           $description = $data[$key];
+        }
+        $key = "timeout";
+        if (array_key_exists($key, $data)) {  
+            $timeout = $data[$key];
+            // TODO: Set default if required...
+        }
+//        $err->addMissing("xxx");
+//        $err->addError("Something really bad went wrong here", $err->getConstant('CODE_FATAL'));
+//        $err->addMissing("yyy");
 
-        $this->log->debug("newQueue err=" . print_r(json_encode($err->getError())));
-        $queue = new DbQueue($data["id"], $data["name"], $data["description"], $data["timeout"]);
-        // TODO: Fix it...  $id = 
-        return "New Queue <br>\n" . var_dump($queue, true);
+        if ($err->getLevel() > 0) {
+            $this->log->debug("newQueue err=" . print_r(json_encode($err->getError())));
+            return $err->getErrorResponse($response);
+        } else {
+
+            $queue = new DbQueue($data["id"], $data["name"], $description, $timeout);
+
+
+            // TODO: Fix it...  $id = 
+
+            $resp = new \Malmanger\Mpmq\Util\ResponseHandler();
+
+            return "XXNew Queue <br>\n" . var_export($queue, true);
+        }
+
      }  
     public function updateQueue(Request $request, Response $response, array $args)
     {

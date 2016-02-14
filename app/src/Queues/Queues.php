@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\StreamInterface as Stream;
 
 use Malmanger\Mpmq\Db\DbQueue as DbQueue;
+use Malmanger\Mpmq\Db\DbTools as DbTools;
 
 class Queues {
 //    private $log = \Malmanger\Mpmq\Util\Log::getInstance(\Malmanger\Mpmq\Util\Log::DEBUG);
@@ -18,34 +19,45 @@ class Queues {
     
     public function listQueues(Request $request, Response $response, array $args)
     {
-        return "listQueues <br>\n" . var_dump($response, true);
+        global $database;
+        $dbTools = DbTools::getInstance($database);
+
+        $resp = new \Malmanger\Mpmq\Util\ResponseHandler($dbTools->getQueues());
+        return $resp->getResponse($response);
      }  
 
     public function getInformation(Request $request, Response $response, array $args)
     {
         $id = intval($args["id"]);
-        $queue = new DbQueue((int)$id);
+        $queue = new DbQueue($id);
         return json_encode($queue->toArray()); //"getInformation <br>\n" . var_dump($args, true);
      }  
     // Needs to be a POST request
     public function newQueue(Request $request, Response $response, array $args)
     {
+        global $database;
         $err = new \Malmanger\Mpmq\Util\ErrorHandler();
 
         $data = $request->getParsedBody();
         $this->log->debug("newQueue data=".print_r($data, true));
 
         // Check for mandatory parameters and set defaults
+        $id = null;
+        $name = null;
         $timeout = null;
         $description = '';
 
         $key = "id";
         if (!array_key_exists($key, $data)) {  
             $err->addMissing($key);
+        } else {
+            $id = $data["id"];
         }
         $key = "name";
         if (!array_key_exists($key, $data)) {  
             $err->addMissing($key);
+        } else {
+            $name = $data["name"];
         }
         $key = "description";
         if (array_key_exists($key, $data)) {  
@@ -54,25 +66,33 @@ class Queues {
         $key = "timeout";
         if (array_key_exists($key, $data)) {  
             $timeout = $data[$key];
-            // TODO: Set default if required...
         }
-//        $err->addMissing("xxx");
-//        $err->addError("Something really bad went wrong here", $err->getConstant('CODE_FATAL'));
-//        $err->addMissing("yyy");
+
+        $queue = new DbQueue($id, $name, $description, $timeout);
+        if ($queue->queueExists()) {
+            $err->addExists($id);
+        }
 
         if ($err->getLevel() > 0) {
-            $this->log->debug("newQueue err=" . print_r(json_encode($err->getError())));
+            return $err->getErrorResponse($response);
+        } 
+
+        if (!$queue->save()) {
+            $err->addDbUpdate("newQueue");
+        }
+
+        if ($err->getLevel() > 0) {
             return $err->getErrorResponse($response);
         } else {
+            $data = array();
+            $data['id'] = $queue->getId();
+            $data['name'] = $queue->getName();
+            $data['description'] = $queue->getDescription();
+            $data['timeout'] = $queue->getTimeout();
 
-            $queue = new DbQueue($data["id"], $data["name"], $description, $timeout);
-
-
-            // TODO: Fix it...  $id = 
-
-            $resp = new \Malmanger\Mpmq\Util\ResponseHandler();
-
-            return "XXNew Queue <br>\n" . var_export($queue, true);
+            $resp = new \Malmanger\Mpmq\Util\ResponseHandler($data);
+            
+            return $resp->getResponse($response);
         }
 
      }  
@@ -82,18 +102,27 @@ class Queues {
      }  
     public function deleteQueue(Request $request, Response $response, array $args)
     {
-//        $stream = $response->getBody();
-        // $stream->write(json_encode([
-        //     'status' => 204,
-        //     'detail' => 'Queue deleted',
-        // ]));
+        global $database;
+        $err = new \Malmanger\Mpmq\Util\ErrorHandler();
 
-//$stream->write("Hello World");
-//        $response = $response->withBody($stream);
+        $data = $request->getParsedBody();
+        $this->log->debug("deleteQueue args=".print_r($args, true));
 
-        // An Response with status 204 should be empty
-        $response = $response->withStatus(204, 'Queue deleted');
+        $queue = new DbQueue($args['id']);
+        if (!$queue->queueExists()) {
+            $err->addNotFound($args['id']);
+        }
 
-        return $response;
+        if (!$queue->delete()) {
+            $err->addDbUpdate("deleteQueue");
+        }
+
+        if ($err->getLevel() > 0) {
+            return $err->getErrorResponse($response);
+        } else {
+            $resp = new \Malmanger\Mpmq\Util\ResponseHandler();
+            
+            return $resp->setStatus(204, 'Queue deleted')->getResponse($response);
+        }
      }  
 }

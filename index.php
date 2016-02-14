@@ -18,7 +18,6 @@ if (file_exists('app/settings.php')) {
 
 // Create a log object
 $log = \Malmanger\Mpmq\Util\Log::getInstance(\Malmanger\Mpmq\Util\Log::DEBUG);
-
 $log->debug("Logging started");
 
 // initialize database

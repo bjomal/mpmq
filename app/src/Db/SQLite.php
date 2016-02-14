@@ -38,12 +38,27 @@ class SQLite extends Db {
         $results = $this->db->query($sql);
     }
 
-    public function getQueue($id) {
-        // id, name, description, timeout
-        $ret = array();
-        $sql = "SELECT * FROM queues WHERE id = '${id}' ORDER BY id ASC";
+    public function listQueues() {
+        $ret = null;
+        $sql = "SELECT * FROM queues;";
         $results = $this->db->query($sql);
         while ($row = $results->fetchArray()) {
+            if ($ret === null) { $ret = array(); }
+            $ret[] = $row;
+        }
+        
+        return $ret;
+    }
+
+    public function getQueue($id) {
+        // id, name, description, timeout
+        $ret = null;
+        $sql = "SELECT * FROM queues WHERE id = '${id}' ORDER BY id ASC";
+        $results = $this->db->query($sql);
+$this->log->debug("select id=$id returns: " . var_export($results, true));
+        while ($row = $results->fetchArray()) {
+$this->log->debug("fetchArray returns: " . var_export($row, true));
+            $ret = array();
             $key = "id";
             if (array_key_exists($key, $row)) { $ret[$key] = $row[$key]; }
             $key = "name";
@@ -54,5 +69,34 @@ class SQLite extends Db {
             if (array_key_exists($key, $row)) { $ret[$key] = intval($row[$key]); }
         }
         return $ret;
+    }
+
+    public function queueExists($id) {
+        $ret = false;
+        $sql = "SELECT id FROM queues WHERE id = '${id}'";
+        $results = $this->db->query($sql);
+        while ($row = $results->fetchArray()) {
+            $ret = true;
+        }
+        return $ret;
+    }
+
+    public function updateQueue($id, $name, $description, $timeout) {
+        $sql = "INSERT OR REPLACE INTO queues (id, name, description, timeout) VALUES ( '$id', '$name', '$description', $timeout );";
+        $this->log->debug("running sql query: " . $sql);
+        if ($this->db->query($sql)) {
+            return true;
+        } else { 
+            return false;
+        }
+    }
+    public function deleteQueue($id) {
+        $sql = "DELETE FROM queues WHERE id = '${id}'";
+        $this->log->debug("running sql query: " . $sql);
+        if ($this->db->query($sql)) {
+            return true;
+        } else { 
+            return false;
+        }
     }
 }

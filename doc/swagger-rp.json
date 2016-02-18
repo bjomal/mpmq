@@ -53,7 +53,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/newQueue"
+                            "$ref": "#/definitions/queueBasic"
                         }
                     }
                 ],
@@ -82,8 +82,7 @@
                         "in": "path",
                         "description": "ID og queue to get",
                         "required": true,
-                        "type": "integer",
-                        "format": "int64"
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -106,15 +105,14 @@
                         "in": "path",
                         "description": "ID of queue to update",
                         "required": true,
-                        "type": "integer",
-                        "format": "int64"
+                        "type": "string"
                     },
                     {
                         "name": "queue",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/newQueue"
+                            "$ref": "#/definitions/queueBasic"
                         }
                     }
                 ],
@@ -144,8 +142,7 @@
                         "in": "path",
                         "description": "ID of queue to delete",
                         "required": true,
-                        "type": "integer",
-                        "format": "int64"
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -523,7 +520,7 @@
                 }
             }
         },
-        "newQueue": {
+        "queueBasic": {
             "type": "object",
             "required": [
                 "id",

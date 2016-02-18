@@ -35,11 +35,11 @@ class DbQueue {
 
     public function getId() { return $this->id; }
     public function getName() { return $this->name; }
-    public function setName(string $name) { $this->changed()->name = $name; return $this;}
+    public function setName($name) { $this->changed()->name = $name; return $this;}
     public function getDescription() { return $this->description; }
-    public function setDescription(string $description) { $this->changed()->description = $description; return $this;}
+    public function setDescription($description) { $this->changed()->description = $description; return $this;}
     public function getTimeout() { return $this->timeout; }
-    public function setTimeout(int $timeout) { $this->changed()->timeout = $timeout; return $this;}
+    public function setTimeout($timeout) { $this->changed()->timeout = $timeout; return $this;}
 
     public function queueExists() {
         return $this->existed;

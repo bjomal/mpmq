@@ -28,9 +28,9 @@ class Queues {
 
     public function getInformation(Request $request, Response $response, array $args)
     {
-        $id = intval($args["id"]);
-        $queue = new DbQueue($id);
-        return json_encode($queue->toArray()); //"getInformation <br>\n" . var_dump($args, true);
+        $queue = new DbQueue($args["id"]);
+        $resp = new \Malmanger\Mpmq\Util\ResponseHandler($queue->toArray());
+        return $resp->getResponse($response); //"getInformation <br>\n" . var_dump($args, true);
      }  
     // Needs to be a POST request
     public function newQueue(Request $request, Response $response, array $args)
@@ -98,8 +98,70 @@ class Queues {
      }  
     public function updateQueue(Request $request, Response $response, array $args)
     {
-        return "Update Queue <br>\n" . var_dump($args, true);
-     }  
+
+        global $database;
+        $err = new \Malmanger\Mpmq\Util\ErrorHandler();
+
+        $data = $request->getParsedBody();
+        $this->log->debug("updateQueue args=".print_r($args, true));
+        $this->log->debug("updateQueue data=".print_r($data, true));
+
+        // Check for mandatory parameters and set defaults
+        $id = null;
+        $name = null;
+        $timeout = null;
+        $description = null;
+
+        $key = "id";    //mandatory in URL
+        if (!array_key_exists($key, $args)) {  
+            $err->addMissing($key);
+        } else {
+            $id = $args["id"];
+        }
+        $key = "name";
+        if (array_key_exists($key, $data)) {  
+            $name = $data[$key];
+        }
+        $key = "description";
+        if (array_key_exists($key, $data)) {  
+           $description = $data[$key];
+        }
+        $key = "timeout";
+        if (array_key_exists($key, $data)) {  
+            $timeout = $data[$key];
+        }
+
+        $queue = new DbQueue($id, 'dummy name');
+        if (!$queue->queueExists()) {
+            $err->addNotFound($id);
+        }
+
+        if ($err->getLevel() > 0) {
+            return $err->getErrorResponse($response);
+        } 
+
+        if (!empty($name)) { $queue->setName($name); }
+        if (!empty($timeout)) { $queue->setTimeout($timeout); }
+        if (!empty($description)) { $queue->setDescription($description); }
+
+        if (!$queue->save()) {
+            $err->addDbUpdate("updateQueue");
+        }
+
+        if ($err->getLevel() > 0) {
+            return $err->getErrorResponse($response);
+        } else {
+            $data = array();
+            $data['id'] = $queue->getId();
+            $data['name'] = $queue->getName();
+            $data['description'] = $queue->getDescription();
+            $data['timeout'] = $queue->getTimeout();
+
+            $resp = new \Malmanger\Mpmq\Util\ResponseHandler($data);
+            return $resp->getResponse($response);
+        }
+    }  
+
     public function deleteQueue(Request $request, Response $response, array $args)
     {
         global $database;

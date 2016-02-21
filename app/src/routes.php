@@ -1,10 +1,9 @@
 <?php
 // Route configuration
 
+$app->get('/', 'Malmanger\Mpmq\Util\Misc:root')->setName('root');
+
 $app->get('/trying', 'Trying\Me:out')->setName('trying-me-out');
-// $app->get('/trying', function($request, $response, $args) {
-//     echo 'Hello, world!';
-// })->setName('trying-me-out');
 $app->get('/queues[/]', 'Malmanger\Mpmq\Queues\Queues:listQueues')->setName('queues-list');
 $app->post('/queues[/]', 'Malmanger\Mpmq\Queues\Queues:newQueue')->setName('queue-new');
 

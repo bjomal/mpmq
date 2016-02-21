@@ -578,7 +578,7 @@
                 "title": {
                     "type": "string"
                 },
-                "data": {
+                "payload": {
                     "type": "string",
                     "format": "byte"
                 },
@@ -610,7 +610,7 @@
                 "title": {
                     "type": "string"
                 },
-                "data": {
+                "payload": {
                     "type": "string",
                     "format": "byte"
                 },

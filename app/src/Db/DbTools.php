@@ -25,4 +25,14 @@ class DbTools {
     public static function getQueues() {
         return self::$db->listQueues();
     }
+    /**
+     * get messages from database
+     * 
+     * @param string $id ID of queue to get
+     * 
+     * @return array messageData for queue
+     */
+    public static function getMessages($id) {
+        return self::$db->listMessages($id);
+    }
 }

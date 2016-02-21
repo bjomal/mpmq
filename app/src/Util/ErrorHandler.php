@@ -48,15 +48,30 @@ class ErrorHandler {
 
     public function addMissing($key) {
         $this->addError("Missing value for required input '" . $key . "'", self::CODE_DATA_MISSING);
+        return $this;
     }
     public function addExists($key) {
         $this->addError("Item '" . $key . "' already exists", self::CODE_DATA_EXIST);
+        return $this;
     }
     public function addNotFound($key) {
-        $this->addError("Item '" . $key . "' not found", self::CODE_DATA_NOT_FOUND);
+        $this->addError("'" . $key . "' not found", self::CODE_DATA_NOT_FOUND);
+        return $this;
     }
     public function addDbUpdate($key) {
         $this->addError("Database update feiled on '" . $key . "'", self::CODE_DB_UPDATE_FAILED);
+        return $this;
+    }
+    /**
+     * Add fatal error to array of errors
+     *
+     * @param string $message Message to be written to output
+     * 
+     * @return ErrorHandler
+     */
+    public function addFatal($message) {
+        $this->addError("FATAL ERROR: ".$message." ", self::CODE_FATAL);
+        return $this;
     }
 
     public function getError() {
@@ -98,4 +113,5 @@ class ErrorHandler {
         }
         return $response;
     }
+
 }

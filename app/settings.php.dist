@@ -13,7 +13,7 @@ return [
             'password'  => 'mpmq',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'prefix'    => 'mpmq_',
         ],
         'view' => [
             'template_path' => 'app/templates',
@@ -21,6 +21,9 @@ return [
                 'cache' => 'cache/twig',
                 'debug' => true,
             ],
+        ],
+        'misc' => [
+            'root' => 'doc/index.html',
         ],
     ],
 ];

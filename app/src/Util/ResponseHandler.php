@@ -28,6 +28,7 @@ class ResponseHandler {
     protected $data = null;
     protected $statusCode = 200;
     protected $message = 'OK';
+    protected $redirectUrl = null;
 
     public function __construct($data = null) {
         $this->log = \Malmanger\Mpmq\Util\Log::getInstance();
@@ -38,6 +39,10 @@ class ResponseHandler {
 
     public function setData($data) {
         $this->data = $data;
+        return $this;
+    }
+    public function setUrl($url) {
+        $this->redirectUrl = $url;
         return $this;
     }
 
@@ -57,7 +62,22 @@ class ResponseHandler {
             $stream->write(json_encode($this->data));
             $response = $response->withBody($stream);
         }
+$this->log->debug("statusCode".$this->statusCode);
+        switch ($this->statusCode) {
+            case self::CODE_FOUND:
+$this->log->debug("CODE_SEE_OTHER");
+                if (strlen($this->redirectUrl)>0) {
+$this->log->debug("redirectUrl:".$this->redirectUrl);
+                    $response = $response->withHeader('Location', $this->redirectUrl);
+                }
+                break;
+            default:
+                break;
+        }
+
+$this->log->debug("setting status:".$this->statusCode);
         $response = $response->withStatus($this->statusCode, $this->message);
         return $response;
     }
+
 }
